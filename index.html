@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BiōmeLitter — High-performance cat litter, reimagined.</title>
+  <meta name="description" content="BiōmeLitter — high-performance cat litter, reimagined. Join the waitlist." />
+
+  <!-- Open Graph / social preview -->
+  <meta property="og:title" content="BiōmeLitter" />
+  <meta property="og:description" content="High-performance cat litter: reimagined." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://biomelitter.com" />
+
+  <link rel="icon" href="assets/cat.svg" type="image/svg+xml" />
+
+  <!-- DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --ink: #2b2b2b;
+      --btn: #4a4644;
+      --orange: #f5a623;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background-image: url('assets/clouds.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 760px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Sizes reverse-engineered from the 1512×982 (14" MacBook Pro) Figma,
+       anchored to the 24px tagline. */
+    .logo {
+      width: 810px;
+      max-width: 92vw;
+      height: auto;
+      display: block;
+      margin: 0 auto 44px;
+    }
+
+    .tagline {
+      font-size: 20px;
+      font-weight: 400;
+      margin-bottom: 180px;
+    }
+
+    /* ---- signup block: form + counter share one column, left-aligned ---- */
+    .signup {
+      width: 476px;
+      max-width: 92vw;
+      margin: 0 auto;
+    }
+
+    form { width: 100%; }
+
+    .field {
+      display: flex;
+      width: 100%;
+      height: 36px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .field input[type="email"] {
+      flex: 1 1 auto;
+      min-width: 0;
+      border: 1px solid #d9d9d9;
+      border-right: none;
+      background: #fff;
+      padding: 0 16px;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--ink);
+      outline: none;
+    }
+    .field input[type="email"]::placeholder { color: #9a9a9a; }
+    .field input[type="email"]:focus { border-color: #b5b5b5; }
+
+    .field button {
+      flex: 0 0 auto;
+      border: none;
+      background: var(--btn);
+      color: #fff;
+      padding: 0 20px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 400;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s ease;
+    }
+    .field button:hover { background: #3a3735; }
+    .field button:disabled { opacity: 0.6; cursor: default; }
+
+    /* ---- counter ---- */
+    .counter {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 18px;
+      text-align: left;
+    }
+
+    .cat-badge {
+      flex: 0 0 auto;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cat-badge svg {
+      width: 18px;
+      height: 18px;
+      fill: #1a1a1a;
+      animation: spin 3.5s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cat-badge svg { animation: none; }
+    }
+
+    .counter-text {
+      font-size: 15px;
+      line-height: 1.35;
+      color: var(--ink);
+    }
+
+    .success {
+      margin-top: 22px;
+      font-size: 16px;
+      color: var(--ink);
+      display: none;
+    }
+
+    /* ---- mobile ---- */
+    @media (max-width: 600px) {
+      body { padding: 20px 16px; }
+
+      .logo { width: 84vw; margin-bottom: 30px; }
+
+      /* keep the tagline on a single line, scaled to fit */
+      .tagline {
+        font-size: clamp(15px, 4.4vw, 22px);
+        white-space: nowrap;
+        margin-bottom: 84px;
+      }
+
+      .signup { width: 100%; }
+
+      /* email + button stay on the SAME line, taller for easy tapping */
+      .field { height: 46px; }
+      .field input[type="email"] { font-size: 16px; }
+      .field button { padding: 0 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <img class="logo" src="assets/logo.png" alt="BiōmeLitter" />
+    <p class="tagline">High-performance cat litter: reimagined.</p>
+
+    <div class="signup">
+      <form id="waitlist-form">
+        <div class="field">
+          <input type="email" name="email" placeholder="email" required aria-label="email" />
+          <button type="submit">join now</button>
+        </div>
+      </form>
+
+      <div class="counter" id="counter">
+        <span class="cat-badge" aria-hidden="true">
+          <!-- Font Awesome cat (free) -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M96 160C149 160 192 203 192 256L192 341.8C221.7 297.1 269.8 265.6 325.4 257.8C351 317.8 410.6 359.9 480 359.9C490.9 359.9 501.6 358.8 512 356.8L512 544C512 561.7 497.7 576 480 576C462.3 576 448 561.7 448 544L448 403.2L312 512L368 512C385.7 512 400 526.3 400 544C400 561.7 385.7 576 368 576L224 576C171 576 128 533 128 480L128 256C128 239.4 115.4 225.8 99.3 224.2L92.7 223.9C76.6 222.2 64 208.6 64 192C64 174.3 78.3 160 96 160zM565.8 67.2C576.2 58.5 592 65.9 592 79.5L592 192C592 253.9 541.9 304 480 304C418.1 304 368 253.9 368 192L368 79.5C368 65.9 383.8 58.5 394.2 67.2L448 112L512 112L565.8 67.2zM432 172C421 172 412 181 412 192C412 203 421 212 432 212C443 212 452 203 452 192C452 181 443 172 432 172zM528 172C517 172 508 181 508 192C508 203 517 212 528 212C539 212 548 203 548 192C548 181 539 172 528 172z"/></svg>
+        </span>
+        <span class="counter-text" id="counter-text"></span>
+      </div>
+
+      <p class="success" id="success">🎉 You're on the list — welcome aboard.</p>
+    </div>
+  </main>
+
+  <script>
+    // ---- Easy-to-edit settings ----
+    // The waitlist starts at BASE_COUNT on BASE_DATE, then grows by a
+    // deterministic 20–40 each day after that (same number for every visitor).
+    const BASE_COUNT = 5457;
+    const BASE_DATE  = { y: 2026, m: 7, d: 23 };   // Jul 23, 2026 (ET)
+
+    // Paste your Google Apps Script web-app URL here to log emails to a Google Sheet.
+    // Leave "" and the form still works visually (nothing is stored).
+    const GOOGLE_SCRIPT_URL = "";
+
+    // ---- Today's date in US Eastern Time ----
+    const ET = 'America/New_York';
+    const now = new Date();
+    const todayStr = new Intl.DateTimeFormat('en-US', {
+      timeZone: ET, month: 'short', day: 'numeric', year: 'numeric'
+    }).format(now);
+
+    // How many whole days since BASE_DATE, measured in ET
+    function etYMD(date) {
+      const p = {};
+      new Intl.DateTimeFormat('en-US', { timeZone: ET, year: 'numeric', month: '2-digit', day: '2-digit' })
+        .formatToParts(date).forEach(x => p[x.type] = x.value);
+      return Date.UTC(+p.year, +p.month - 1, +p.day);
+    }
+    const daysElapsed = Math.max(0,
+      Math.round((etYMD(now) - Date.UTC(BASE_DATE.y, BASE_DATE.m - 1, BASE_DATE.d)) / 86400000));
+
+    // Deterministic per-day increment (20–40), seeded by the day number so
+    // the count is identical for everyone and only ever goes up.
+    function dayIncrement(n) {
+      let h = (n ^ 0x9e3779b9) >>> 0;
+      h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+      h = Math.imul(h ^ (h >>> 16), 0x45d9f3b);
+      h = (h ^ (h >>> 16)) >>> 0;
+      return 20 + (h % 21); // 20..40
+    }
+    let liveCount = BASE_COUNT;
+    for (let i = 1; i <= daysElapsed; i++) liveCount += dayIncrement(i);
+
+    const counterText = document.getElementById('counter-text');
+    function renderCount(n) {
+      counterText.textContent = n.toLocaleString() + " cats currently on waitlist\n[last updated " + todayStr + "]";
+    }
+    counterText.style.whiteSpace = 'pre-line';
+    renderCount(liveCount);
+
+    // ---- Submit handling (AJAX so the page doesn't reload) ----
+    const form = document.getElementById('waitlist-form');
+    const counter = document.getElementById('counter');
+    const success = document.getElementById('success');
+
+    const encode = (data) =>
+      Object.keys(data).map(k => encodeURIComponent(k) + "=" + encodeURIComponent(data[k])).join("&");
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = form.email.value;
+      const btn = form.querySelector('button');
+      btn.disabled = true;
+      btn.textContent = 'joining…';
+
+      const showSuccess = () => {
+        form.style.display = 'none';
+        counter.style.display = 'none';
+        success.style.display = 'block';
+        renderCount(liveCount + 1);
+      };
+
+      // Log the email to a Google Sheet via Apps Script (if configured).
+      // no-cors lets the write go through from GitHub Pages without a CORS setup.
+      if (GOOGLE_SCRIPT_URL) {
+        fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: encode({ email: email })
+        }).catch(() => {}).finally(showSuccess);
+      } else {
+        showSuccess();
+      }
+    });
+  </script>
+</body>
+</html>
