@@ -156,6 +156,35 @@
       font-size: 15px;
       line-height: 1.35;
       color: var(--ink);
+      display: flex;
+      flex-direction: column;
+    }
+    .counter-line1 strong { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+    /* "+N today" with a live pulse dot */
+    .today {
+      margin-left: 8px;
+      font-size: 13px;
+      color: #2e9c5a;
+      white-space: nowrap;
+    }
+    .live-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-right: 5px;
+      border-radius: 50%;
+      background: #35c46a;
+      vertical-align: 1px;
+      animation: livepulse 1.8s ease-out infinite;
+    }
+    @keyframes livepulse {
+      0%   { box-shadow: 0 0 0 0 rgba(53,196,106,0.55); }
+      70%  { box-shadow: 0 0 0 6px rgba(53,196,106,0); }
+      100% { box-shadow: 0 0 0 0 rgba(53,196,106,0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .live-dot { animation: none; }
     }
 
     .success {
@@ -205,7 +234,12 @@
           <!-- Font Awesome cat (free) -->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M96 160C149 160 192 203 192 256L192 341.8C221.7 297.1 269.8 265.6 325.4 257.8C351 317.8 410.6 359.9 480 359.9C490.9 359.9 501.6 358.8 512 356.8L512 544C512 561.7 497.7 576 480 576C462.3 576 448 561.7 448 544L448 403.2L312 512L368 512C385.7 512 400 526.3 400 544C400 561.7 385.7 576 368 576L224 576C171 576 128 533 128 480L128 256C128 239.4 115.4 225.8 99.3 224.2L92.7 223.9C76.6 222.2 64 208.6 64 192C64 174.3 78.3 160 96 160zM565.8 67.2C576.2 58.5 592 65.9 592 79.5L592 192C592 253.9 541.9 304 480 304C418.1 304 368 253.9 368 192L368 79.5C368 65.9 383.8 58.5 394.2 67.2L448 112L512 112L565.8 67.2zM432 172C421 172 412 181 412 192C412 203 421 212 432 212C443 212 452 203 452 192C452 181 443 172 432 172zM528 172C517 172 508 181 508 192C508 203 517 212 528 212C539 212 548 203 548 192C548 181 539 172 528 172z"/></svg>
         </span>
-        <span class="counter-text" id="counter-text"></span>
+        <span class="counter-text">
+          <span class="counter-line1">
+            <strong id="count-num">5,457</strong> cats currently on waitlist<span class="today"><span class="live-dot"></span><span id="today-joins">+0</span> today</span>
+          </span>
+          <span class="counter-line2">[last updated <span id="updated-date">Jul 23, 2026</span>]</span>
+        </span>
       </div>
 
       <p class="success" id="success">🎉 You're on the list — welcome aboard.</p>
@@ -252,12 +286,28 @@
     let liveCount = BASE_COUNT;
     for (let i = 1; i <= daysElapsed; i++) liveCount += dayIncrement(i);
 
-    const counterText = document.getElementById('counter-text');
-    function renderCount(n) {
-      counterText.textContent = n.toLocaleString() + " cats currently on waitlist\n[last updated " + todayStr + "]";
+    const numEl = document.getElementById('count-num');
+    document.getElementById('updated-date').textContent = todayStr;
+
+    // "joined today" — deterministic 20–40, always positive (even on launch day)
+    const todayJoins = dayIncrement(daysElapsed + 1);
+    document.getElementById('today-joins').textContent = "+" + todayJoins;
+
+    const setCount = (n) => { numEl.textContent = Math.round(n).toLocaleString(); };
+
+    // Count-up animation each time the page loads → feels live
+    function animateCount(to) {
+      const from = Math.max(0, to - (60 + todayJoins * 5));
+      const dur = 1500, t0 = performance.now();
+      const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+      (function frame(t) {
+        const p = Math.min(1, (t - t0) / dur);
+        setCount(from + (to - from) * easeOut(p));
+        if (p < 1) requestAnimationFrame(frame);
+      })(t0);
     }
-    counterText.style.whiteSpace = 'pre-line';
-    renderCount(liveCount);
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) setCount(liveCount); else animateCount(liveCount);
 
     // ---- Submit handling (AJAX so the page doesn't reload) ----
     const form = document.getElementById('waitlist-form');
@@ -278,7 +328,7 @@
         form.style.display = 'none';
         counter.style.display = 'none';
         success.style.display = 'block';
-        renderCount(liveCount + 1);
+        setCount(liveCount + 1);
       };
 
       // Log the email to a Google Sheet via Apps Script (if configured).
